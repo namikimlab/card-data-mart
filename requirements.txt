@@ -1,0 +1,5 @@
+dbt-core==1.9.5
+dbt-postgres==1.9.5
+pandas
+openpyxl
+psycopg2-binary
