@@ -1,0 +1,12 @@
+# Use official dbt-core Postgres image (includes dbt-core + dbt-postgres)
+FROM ghcr.io/dbt-labs/dbt-postgres:1.7.9
+
+# Set working directory
+WORKDIR /usr/app
+
+# (Optional) If you have extra Python packages to install, do it here
+# COPY requirements.txt .
+# RUN pip install --no-cache-dir -r requirements.txt
+
+# Default command (can be overridden by docker-compose)
+CMD ["dbt", "--version"]

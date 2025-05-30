@@ -1,8 +1,8 @@
-dbt-core==1.4.7
-dbt-postgres==1.4.7
+dbt-core==1.7.9
+dbt-postgres==1.7.9
 pandas
 openpyxl
 psycopg2-binary
 boto3
-dotenv
+python-dotenv
 
