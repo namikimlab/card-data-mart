@@ -1,23 +1,46 @@
+import os
 import pandas as pd
 import psycopg2
 from psycopg2.extras import execute_values
-import os
+from dotenv import load_dotenv
 
-PG_HOST = os.getenv("PG_HOST", "localhost")
-PG_PORT = os.getenv("PG_PORT", "5432")
-PG_USER = os.getenv("PG_USER", "dbt_user")
-PG_PASSWORD = os.getenv("PG_PASSWORD", "***REMOVED***")
-PG_DATABASE = os.getenv("PG_DATABASE", "retail")
+# Load environment variables from the .env file
+load_dotenv()
+
+# --- PostgreSQL connection settings from environment variables ---
+PG_HOST = os.getenv("PG_HOST")
+PG_PORT = os.getenv("PG_PORT")
+PG_USER = os.getenv("PG_USER")
+PG_PASSWORD = os.getenv("PG_PASSWORD")
+PG_DATABASE = os.getenv("PG_DATABASE")
+EXCEL_FILE_PATH = "/opt/airflow/data/raw/online_retail.xlsx"
+
+# --- Validate required environment variables ---
+required_vars = {
+    "PG_HOST": PG_HOST,
+    "PG_PORT": PG_PORT,
+    "PG_USER": PG_USER,
+    "PG_PASSWORD": PG_PASSWORD,
+    "PG_DATABASE": PG_DATABASE
+}
+missing = [k for k, v in required_vars.items() if not v]
+if missing:
+    raise EnvironmentError(f"❌ Missing required environment variables: {', '.join(missing)}")
 
 def load_excel_to_postgres():
-    df = pd.read_excel("data/raw/online_retail.xlsx")
+    # Load Excel file
+    try:
+        df = pd.read_excel(EXCEL_FILE_PATH)
+    except Exception as e:
+        raise FileNotFoundError(f"❌ Failed to load Excel file at {EXCEL_FILE_PATH}: {e}")
 
+    # Drop rows with missing values in essential columns
     df = df.dropna(subset=["InvoiceNo", "StockCode", "Quantity", "InvoiceDate", "UnitPrice"])
 
-    # 열 이름 소문자 + 언더스코어 처리
+    # Standardize column names: lowercase + underscores
     df.columns = [c.strip().lower().replace(" ", "_") for c in df.columns]
 
-    # 컬럼명 재정의: 카드 거래 형태
+    # Rename columns to simulate a card transaction dataset
     df = df.rename(columns={
         "invoice_no": "transaction_id",
         "customer_id": "cardholder_id",
@@ -25,42 +48,52 @@ def load_excel_to_postgres():
         "invoice_date": "transaction_date"
     })
 
-    conn = psycopg2.connect(
-        host=PG_HOST,
-        port=PG_PORT,
-        user=PG_USER,
-        password=PG_PASSWORD,
-        dbname=PG_DATABASE
-    )
-    cursor = conn.cursor()
+    # Connect to PostgreSQL and upload data
+    try:
+        conn = psycopg2.connect(
+            host=PG_HOST,
+            port=PG_PORT,
+            user=PG_USER,
+            password=PG_PASSWORD,
+            dbname=PG_DATABASE
+        )
+        cursor = conn.cursor()
 
-    cursor.execute("DROP TABLE IF EXISTS card_transactions;")
-    cursor.execute("""
-        CREATE TABLE card_transactions (
-            transaction_id TEXT,
-            stock_code TEXT,
-            description TEXT,
-            quantity INTEGER,
-            transaction_date TIMESTAMP,
-            amount FLOAT,
-            cardholder_id TEXT,
-            country TEXT
-        );
-    """)
+        # Drop the table if it exists and recreate it
+        cursor.execute("DROP TABLE IF EXISTS card_transactions;")
+        cursor.execute("""
+            CREATE TABLE card_transactions (
+                transaction_id TEXT,
+                stock_code TEXT,
+                description TEXT,
+                quantity INTEGER,
+                transaction_date TIMESTAMP,
+                amount FLOAT,
+                cardholder_id TEXT,
+                country TEXT
+            );
+        """)
 
-    tuples = [tuple(x) for x in df.to_numpy()]
-    insert_query = """
-        INSERT INTO card_transactions (
-            transaction_id, stock_code, description, quantity,
-            transaction_date, amount, cardholder_id, country
-        ) VALUES %s;
-    """
-    execute_values(cursor, insert_query, tuples)
+        # Insert all rows from the DataFrame into the database
+        tuples = [tuple(x) for x in df.to_numpy()]
+        insert_query = """
+            INSERT INTO card_transactions (
+                transaction_id, stock_code, description, quantity,
+                transaction_date, amount, cardholder_id, country
+            ) VALUES %s;
+        """
+        execute_values(cursor, insert_query, tuples)
 
-    conn.commit()
-    cursor.close()
-    conn.close()
-    print("✅ Data loaded to PostgreSQL!")
+        conn.commit()
+        print("✅ Data loaded to PostgreSQL!")
 
+    except Exception as e:
+        raise RuntimeError(f"❌ Failed to load data to PostgreSQL: {e}")
+
+    finally:
+        if cursor: cursor.close()
+        if conn: conn.close()
+
+# Entry point
 if __name__ == "__main__":
     load_excel_to_postgres()

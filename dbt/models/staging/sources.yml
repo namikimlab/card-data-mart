@@ -2,7 +2,13 @@ version: 2
 
 sources:
   - name: raw
-    database: retail        # PostgreSQL DB명 (docker-compose 기준)
-    schema: public          # 테이블 생성한 schema (별도 안 줬다면 public)
+    description: >
+      Source layer for raw data loaded from external systems or files.
+      In this case, the card_transactions table was generated from an Excel file and loaded into PostgreSQL via Python.
+    database: retail        # PostgreSQL database where the raw data lives
+    schema: public          # Schema used to store raw data tables
     tables:
       - name: card_transactions
+        description: >
+          Raw transaction-level data generated from the UCI Online Retail dataset.
+          Contains one row per item purchased in a transaction.

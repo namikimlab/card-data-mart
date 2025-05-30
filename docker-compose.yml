@@ -22,18 +22,14 @@ services:
       AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
     volumes:
       - ./dags:/opt/airflow/dags
+      - ./.env:/opt/airflow/dags/.env
+      - ./scripts:/opt/airflow/scripts
+      - ./data:/opt/airflow/data
+      - ./requirements.txt:/requirements.txt
+      - ./entrypoint.sh:/opt/airflow/entrypoint.sh
     ports:
       - "8080:8080"
-    command: bash -c "
-      airflow db init &&
-      airflow users create \
-        --username ${AIRFLOW_ADMIN_USERNAME} \
-        --firstname Admin --lastname User \
-        --role Admin --email admin@example.com \
-        --password ${AIRFLOW_ADMIN_PASSWORD} &&
-      airflow webserver &
-      airflow scheduler
-      "
+    command: bash /opt/airflow/entrypoint.sh
     restart: unless-stopped
 
 volumes:
