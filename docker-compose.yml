@@ -2,9 +2,9 @@ services:
   postgres:
     image: postgres:15
     environment:
-      POSTGRES_USER: airflow
-      POSTGRES_PASSWORD: airflow
-      POSTGRES_DB: retail
+      POSTGRES_USER: ${PG_USER}
+      POSTGRES_PASSWORD: ${PG_PASSWORD}
+      POSTGRES_DB: ${PG_DATABASE}
     ports:
       - "5432:5432"
     volumes:
@@ -89,6 +89,14 @@ services:
     working_dir: /usr/app
     environment:
       - DBT_PROFILES_DIR=/usr/app/profiles
+    depends_on:
+      - postgres
+  metabase:
+    image: metabase/metabase:latest
+    platform: linux/amd64
+    container_name: metabase
+    ports:
+      - "3000:3000"
     depends_on:
       - postgres
 
