@@ -59,10 +59,9 @@ def load_excel_to_postgres():
         )
         cursor = conn.cursor()
 
-        # Drop the table if it exists and recreate it
-        cursor.execute("DROP TABLE IF EXISTS card_transactions;")
+        # Create table if not exist
         cursor.execute("""
-            CREATE TABLE card_transactions (
+            CREATE TABLE IF NOT EXISTS card_transactions (
                 transaction_id TEXT,
                 stock_code TEXT,
                 description TEXT,
@@ -73,6 +72,9 @@ def load_excel_to_postgres():
                 country TEXT
             );
         """)
+
+        # Truncate if existing data
+        cursor.execute("TRUNCATE TABLE card_transactions;")
 
         # Insert all rows from the DataFrame into the database
         tuples = [tuple(x) for x in df.to_numpy()]
