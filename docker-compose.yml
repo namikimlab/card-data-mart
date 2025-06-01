@@ -9,76 +9,68 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - ./postgres-init:/docker-entrypoint-initdb.d
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U airflow"]
       interval: 10s
       retries: 5
       start_period: 10s
 
-  airflow-init:
+# Common configuration for Airflow services
+  x-airflow-common: &airflow-common
     build:
       context: .
       dockerfile: Dockerfile.airflow
     depends_on:
       - postgres
-    environment:
+    environment: &airflow-common-env
       AIRFLOW__CORE__EXECUTOR: LocalExecutor
-      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres:5432/retail
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://${PG_USER}:${PG_PASSWORD}@postgres:5432/${PG_DATABASE}
       AIRFLOW__CORE__FERNET_KEY: ''
       AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
-    volumes:
+    volumes: &airflow-common-volumes
       - ./dags:/opt/airflow/dags
       - ./.env:/opt/airflow/dags/.env
+      - ./dbt:/opt/airflow/dbt
       - ./scripts:/opt/airflow/scripts
       - ./data:/opt/airflow/data
       - ./logs:/opt/airflow/logs
+
+  airflow-init:
+    <<: *airflow-common
+    depends_on:
+      postgres:
+        condition: service_healthy
     command: >
       bash -c "
       airflow db upgrade &&
-      airflow users create --username admin --password admin --firstname Admin --lastname User --role Admin --email admin@example.com
+      airflow users create --username admin --password admin --firstname Admin --lastname User --role Admin --email admin@example.com || true
       "
+    restart: "no"
 
   airflow-webserver:
-    build:
-      context: .
-      dockerfile: Dockerfile.airflow
+    <<: *airflow-common
     depends_on:
-      - postgres
-      - airflow-init
-    environment:
-      AIRFLOW__CORE__EXECUTOR: LocalExecutor
-      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres:5432/retail
-      AIRFLOW__CORE__FERNET_KEY: ''
-      AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
-    volumes:
-      - ./dags:/opt/airflow/dags
-      - ./.env:/opt/airflow/dags/.env
-      - ./dbt:/opt/airflow/dbt
-      - ./scripts:/opt/airflow/scripts
-      - ./data:/opt/airflow/data
-      - ./logs:/opt/airflow/logs
+      postgres:
+        condition: service_healthy
+      airflow-init:
+        condition: service_completed_successfully
     ports:
       - "8080:8080"
     command: airflow webserver
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   airflow-scheduler:
-    build:
-      context: .
-      dockerfile: Dockerfile.airflow
+    <<: *airflow-common
     depends_on:
-      - postgres
-      - airflow-init
-    environment:
-      AIRFLOW__CORE__EXECUTOR: LocalExecutor
-      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres:5432/retail
-      AIRFLOW__CORE__FERNET_KEY: ''
-    volumes:
-      - ./dags:/opt/airflow/dags
-      - ./.env:/opt/airflow/dags/.env
-      - ./dbt:/opt/airflow/dbt
-      - ./scripts:/opt/airflow/scripts
-      - ./data:/opt/airflow/data
-      - ./logs:/opt/airflow/logs
+      postgres:
+        condition: service_healthy
+      airflow-init:
+        condition: service_completed_successfully
     command: airflow scheduler
 
   dbt:
@@ -91,14 +83,26 @@ services:
       - DBT_PROFILES_DIR=/usr/app/profiles
     depends_on:
       - postgres
+
   metabase:
     image: metabase/metabase:latest
     platform: linux/amd64
     container_name: metabase
     ports:
       - "3000:3000"
+    environment:
+      MB_DB_TYPE: postgres
+      MB_DB_DBNAME: metabase
+      MB_DB_PORT: 5432
+      MB_DB_USER: ${PG_USER} 
+      MB_DB_PASS: ${PG_PASSWORD}
+      MB_DB_HOST: postgres
+    volumes:
+      - metabase-data:/metabase-data
     depends_on:
       - postgres
 
 volumes:
   postgres_data:
+  metabase-data:
+
