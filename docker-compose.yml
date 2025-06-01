@@ -77,10 +77,10 @@ services:
     image: ghcr.io/dbt-labs/dbt-postgres:1.7.9
     platform: linux/amd64
     volumes:
-      - ./dbt:/usr/app
-    working_dir: /usr/app
+      - ./dbt:/opt/airflow/dbt  
+    working_dir: /opt/airflow/dbt
     environment:
-      - DBT_PROFILES_DIR=/usr/app/profiles
+      - DBT_PROFILES_DIR=/opt/airflow/dbt/profiles
     depends_on:
       - postgres
 
