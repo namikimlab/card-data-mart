@@ -1,0 +1,14 @@
+version: 2
+
+models:
+  - name: dim_products
+    description: "Dimension table containing unique product codes and descriptions."
+
+    columns:
+      - name: stock_code
+        tests:
+          - not_null
+          - unique
+
+      - name: description
+        tests: []

@@ -56,16 +56,22 @@ with DAG(
         bash_command="python /opt/airflow/scripts/prepare_data.py"
     )
 
-    # Task 3: Run dbt transformations
+    # Task 3: Clean dbt target folder
+    dbt_clean = BashOperator(
+        task_id="dbt_clean",
+        bash_command="cd /opt/airflow/dbt && dbt clean --profiles-dir /opt/airflow/dbt"
+    )
+
+    # Task 4: Run dbt transformations
     dbt_run = BashOperator(
         task_id="dbt_run",
         bash_command="cd /opt/airflow/dbt && dbt run --profiles-dir /opt/airflow/dbt"
     )
 
-    # Task 4: Run dbt tests
+    # Task 5: Run dbt tests
     dbt_test = BashOperator(
         task_id="dbt_test",
         bash_command="cd /opt/airflow/dbt && dbt test --profiles-dir /opt/airflow/dbt"
     )
 
-    download_data >> load_to_postgres >> dbt_run >> dbt_test
+    download_data >> load_to_postgres >> dbt_clean >> dbt_run >> dbt_test

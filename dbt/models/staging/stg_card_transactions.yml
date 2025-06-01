@@ -1,0 +1,41 @@
+version: 2
+
+models:
+  - name: stg_card_transactions
+    description: "Cleansed staging table for card transactions."
+
+    columns:
+      - name: transaction_id
+        tests:
+          - not_null
+          - unique
+
+      - name: stock_code
+        tests:
+          - not_null
+
+      - name: description
+        tests: []
+
+      - name: quantity
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 1
+
+      - name: amount
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+
+      - name: transaction_date
+        tests:
+          - not_null
+
+      - name: cardholder_id
+        tests:
+          - not_null
+
+      - name: country
+        tests: []

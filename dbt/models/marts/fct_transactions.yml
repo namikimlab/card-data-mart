@@ -1,0 +1,44 @@
+version: 2
+
+models:
+  - name: fct_transactions
+    description: "Fact table containing cleaned card transactions for analytics."
+
+    columns:
+      - name: transaction_id
+        tests:
+          - not_null
+          - unique
+
+      - name: cardholder_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_customers')
+              field: cardholder_id
+
+      - name: stock_code
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_products')
+              field: stock_code
+
+      - name: quantity
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 1
+
+      - name: amount
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+
+      - name: transaction_date
+        tests:
+          - not_null
+
+      - name: country
+        tests: []

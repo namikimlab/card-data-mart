@@ -4,11 +4,28 @@ sources:
   - name: raw
     description: >
       Source layer for raw data loaded from external systems or files.
-      In this case, the card_transactions table was generated from an Excel file and loaded into PostgreSQL via Python.
-    database: retail        # PostgreSQL database where the raw data lives
-    schema: public          # Schema used to store raw data tables
+      In this case, the card_transactions table was generated from the UCI Online Retail dataset and loaded into PostgreSQL via Python ETL pipeline.
+    database: retail        # PostgreSQL database name (double-check your actual db name)
+    schema: public          # Schema where raw data is stored
+
     tables:
       - name: card_transactions
         description: >
-          Raw transaction-level data generated from the UCI Online Retail dataset.
-          Contains one row per item purchased in a transaction.
+          Raw transaction-level data containing one row per product purchased within each transaction.
+        columns:
+          - name: transaction_id
+            description: Transaction ID (original InvoiceNo)
+          - name: stock_code
+            description: Product code of the item
+          - name: description
+            description: Product name or label
+          - name: quantity
+            description: Number of items purchased
+          - name: transaction_date
+            description: Timestamp of the transaction
+          - name: amount
+            description: Unit price at the time of transaction
+          - name: cardholder_id
+            description: Customer unique identifier (generated)
+          - name: country
+            description: Country where the transaction occurred
