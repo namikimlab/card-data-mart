@@ -2,14 +2,16 @@ version: 2
 
 models:
   - name: fct_transactions
-    description: "Fact table containing cleaned card transactions for analytics."
+    description: "Fact table containing cleaned card transactions used for sales and customer behavior analytics."
 
     columns:
       - name: transaction_id
+        description: "Original transaction identifier from the raw data source."
         tests:
           - not_null
           
       - name: cardholder_id
+        description: "Unique identifier of the customer associated with the transaction."
         tests:
           - not_null
           - relationships:
@@ -17,6 +19,7 @@ models:
               field: cardholder_id
 
       - name: stock_code
+        description: "Product or item code associated with the purchased product."
         tests:
           - not_null
           - relationships:
@@ -24,20 +27,24 @@ models:
               field: stock_code
 
       - name: quantity
+        description: "Number of units purchased in the transaction."
         tests:
           - not_null
           - dbt_utils.accepted_range:
               min_value: 1
 
       - name: amount
+        description: "Unit price of the product at time of transaction."
         tests:
           - not_null
           - dbt_utils.accepted_range:
               min_value: 0
 
       - name: transaction_date
+        description: "Date and time when the transaction occurred."
         tests:
           - not_null
 
       - name: country
+        description: "Country where the transaction was made."
         tests: []

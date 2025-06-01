@@ -2,6 +2,8 @@
     materialized='table'
 ) }}
 
+-- Aggregate monthly sales performance from the fact transactions table
+
 WITH monthly_sales AS (
     SELECT
         DATE_TRUNC('month', transaction_date) AS month,
@@ -14,6 +16,7 @@ WITH monthly_sales AS (
     GROUP BY 1
 )
 
+-- Final selection with explicit ordering by month
 SELECT
     month,
     num_orders,

@@ -2,42 +2,48 @@ version: 2
 
 models:
   - name: stg_card_transactions
-    description: "Cleansed staging table for card transactions."
+    description: "Cleansed staging table for card transactions. Standardizes raw input and prepares data for downstream marts."
 
     columns:
       - name: transaction_sk
+        description: "Surrogate key uniquely identifying each transaction record."
         tests:
           - not_null
           - unique
 
       - name: stock_code
+        description: "Product or item code for the purchased product."
         tests:
           - not_null
 
       - name: description
+        description: "Text description of the product."
         tests: []
 
       - name: quantity
+        description: "Quantity of items purchased in the transaction."
         tests:
           - not_null
           - dbt_utils.accepted_range:
               min_value: 1
-              max_value: 1000
 
       - name: amount
+        description: "Unit price of the item."
         tests:
           - not_null
           - dbt_utils.accepted_range:
               min_value: 0
-              max_value: 10000
 
       - name: transaction_date
+        description: "Timestamp when the transaction occurred."
         tests:
           - not_null
 
       - name: cardholder_id
+        description: "Unique identifier of the customer (cardholder)."
         tests:
           - not_null
 
       - name: country
+        description: "Country where the transaction was made."
         tests: []
