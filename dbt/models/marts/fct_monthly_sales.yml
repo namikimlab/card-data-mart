@@ -1,0 +1,33 @@
+version: 2
+
+models:
+  - name: fct_monthly_sales
+    description: "Fact table aggregating monthly sales performance metrics."
+
+    columns:
+      - name: month
+        description: "The month of the transactions (first day of month)."
+        tests:
+          - not_null
+          - unique
+
+      - name: num_orders
+        description: "Total number of transactions for the month."
+        tests:
+          - not_null
+
+      - name: total_quantity
+        description: "Total quantity of items sold in the month."
+        tests:
+          - not_null
+
+      - name: total_revenue
+        description: "Total revenue calculated as amount * quantity."
+        tests:
+          - not_null
+
+      - name: avg_order_value
+        description: "Average order value for the month."
+
+      - name: unique_customers
+        description: "Total number of unique customers who made purchases during the month."

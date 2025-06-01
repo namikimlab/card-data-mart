@@ -5,7 +5,7 @@ models:
     description: "Cleansed staging table for card transactions."
 
     columns:
-      - name: transaction_id
+      - name: transaction_sk
         tests:
           - not_null
           - unique
@@ -22,12 +22,14 @@ models:
           - not_null
           - dbt_utils.accepted_range:
               min_value: 1
+              max_value: 1000
 
       - name: amount
         tests:
           - not_null
           - dbt_utils.accepted_range:
               min_value: 0
+              max_value: 10000
 
       - name: transaction_date
         tests:

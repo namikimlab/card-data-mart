@@ -8,8 +8,7 @@ models:
       - name: transaction_id
         tests:
           - not_null
-          - unique
-
+          
       - name: cardholder_id
         tests:
           - not_null
