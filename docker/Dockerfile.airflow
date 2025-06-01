@@ -4,12 +4,16 @@ FROM apache/airflow:2.9.0-python3.9
 # Set working directory
 WORKDIR /opt/airflow
 
+# Install system dependencies (optional, but sometimes recommended for dbt & postgres drivers)
+USER root
+RUN apt-get update && apt-get install -y gcc libpq-dev
+
+# Switch back to airflow user 
+USER airflow
+
 # Install additional Python dependencies
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
-
-# (Optional) If you have any additional OS-level dependencies, add them here
-# RUN apt-get update && apt-get install -y <your-packages>
 
 # Default command (will be overridden by docker-compose anyway)
 CMD ["airflow", "version"]

@@ -20,7 +20,7 @@ services:
   x-airflow-common: &airflow-common
     build:
       context: .
-      dockerfile: Dockerfile.airflow
+      dockerfile: docker/Dockerfile.airflow
     depends_on:
       - postgres
     environment: &airflow-common-env
@@ -29,9 +29,9 @@ services:
       AIRFLOW__CORE__FERNET_KEY: ''
       AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
     volumes: &airflow-common-volumes
+      - ./.env:/opt/airflow/.env
       - ./dags:/opt/airflow/dags
-      - ./.env:/opt/airflow/dags/.env
-      - ./dbt:/opt/airflow/dbt
+      - ./dbt:/opt/airflow/dbt   
       - ./scripts:/opt/airflow/scripts
       - ./data:/opt/airflow/data
       - ./logs:/opt/airflow/logs
@@ -62,7 +62,8 @@ services:
       test: ["CMD", "curl", "--fail", "http://localhost:8080/health"]
       interval: 30s
       timeout: 10s
-      retries: 3
+      retries: 5
+      start_period: 30s
 
   airflow-scheduler:
     <<: *airflow-common
@@ -72,17 +73,6 @@ services:
       airflow-init:
         condition: service_completed_successfully
     command: airflow scheduler
-
-  dbt:
-    image: ghcr.io/dbt-labs/dbt-postgres:1.7.9
-    platform: linux/amd64
-    volumes:
-      - ./dbt:/opt/airflow/dbt  
-    working_dir: /opt/airflow/dbt
-    environment:
-      - DBT_PROFILES_DIR=/opt/airflow/dbt/profiles
-    depends_on:
-      - postgres
 
   metabase:
     image: metabase/metabase:latest
