@@ -1,18 +1,38 @@
 # Python
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
 venv/
+env/
+.Python
 
 # dbt
 dbt_packages/
 dbt_modules/
+target/
 
 # OS
 .DS_Store
 
-# Environment
+# Environment files
 .env
+.env.*
 
 # Airflow
 logs/
 airflow.db
+# airflow airflow.cfg sometimes generated
+airflow.cfg
+
+# Docker volumes (if bind-mounted)
+postgres_data/
+metabase-data/
+
+# Editor/IDE
+.vscode/
+.idea/
+
+# Local documentation builds (optional)
+site/
+dbt-docs/

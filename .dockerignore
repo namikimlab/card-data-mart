@@ -1,18 +1,44 @@
+# Python cache
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
 .Python
+
+# Virtual environments
 env/
 venv/
+
+# Docker
 .dockerignore
+Dockerfile*
+docker-compose.yml
+
+# Git
 .git
 .gitignore
-.idea
-.vscode
+
+# IDE/editor
+.idea/
+.vscode/
+
+# DB files (local sqlite etc)
 *.db
 *.sqlite3
+
+# Environment files
 .env
+.env.*
+
+# Logs
 logs/
-screenshots/
+
+# Raw input/output data (exclude if you want fully reproducible build)
 data/
+
+# Screenshots, documentation outputs
+screenshots/
+assets/
+
+# Metabase state (if any)
+metabase-data/
