@@ -75,7 +75,7 @@ Implemented dbt tests to ensure production-grade data integrity:
 - Easy to extend for daily batch runs
 
 
-## 📦 dbt Documentation Example
+## 📦 dbt Documentation 
 <p align="center">
   <img src="./screenshots/dbt_doc_1.jpg" alt="dbt doc example 1" width="45%" />
   <img src="./screenshots/dbt_doc_2.png" alt="bt doc example 2" width="45%" />
