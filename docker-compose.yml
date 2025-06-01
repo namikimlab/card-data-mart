@@ -57,6 +57,7 @@ services:
         condition: service_completed_successfully
     ports:
       - "8080:8080"
+      - "8082:8082"
     command: airflow webserver
     healthcheck:
       test: ["CMD", "curl", "--fail", "http://localhost:8080/health"]
