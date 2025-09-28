@@ -2,9 +2,15 @@
 
 # Retail Data Mart — Full-stack Data Engineering Project
 
-This project demonstrates a real-world end-to-end data engineering pipeline. Using actual retail transaction data, I built a data mart for batch analytics and dashboarding, focusing on practical, production-ready data workflows.
+> This project demonstrates a real-world end-to-end data engineering pipeline. Using actual retail transaction data, I built a data mart for batch analytics and dashboarding, focusing on practical, production-ready data workflows.
 
-
+[![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat&logo=docker&logoColor=white)]()
+[![Python](https://img.shields.io/badge/Python-3776AB?style=flat&logo=python&logoColor=white)]()
+[![Airflow](https://img.shields.io/badge/Airflow-017CEE?style=flat&logo=apacheairflow&logoColor=white)]()
+[![Postgres](https://img.shields.io/badge/Postgres-336791?style=flat&logo=postgresql&logoColor=white)]()
+[![dbt](https://img.shields.io/badge/dbt-FF694B?style=flat&logo=dbt&logoColor=white)]()
+[![Metabase](https://img.shields.io/badge/Metabase-509EE3?style=flat&logo=metabase&logoColor=white)]()
+[![Amazon S3](https://img.shields.io/badge/Amazon%20S3-569A31?style=flat&logo=amazons3&logoColor=white)]()
 
 ## 🚀 Key Tech Stack
 

@@ -2,7 +2,16 @@
 
 # 리테일 데이터 마트 — 풀스택 데이터 엔지니어링 프로젝트
 
-이 프로젝트는 실제 운영 환경의 엔드 투 엔드 데이터 엔지니어링 파이프라인을 구현합니다. 실제 리테일 거래 데이터를 활용하여 배치 분석 및 대시보드용 데이터 마트를 구축했으며, 실용적이고 운영 수준의 데이터 워크플로우에 중점을 두었습니다.
+> 이 프로젝트는 실제 운영 환경의 엔드 투 엔드 데이터 엔지니어링 파이프라인을 구현합니다. 실제 리테일 거래 데이터를 활용하여 배치 분석 및 대시보드용 데이터 마트를 구축했으며, 실용적이고 운영 수준의 데이터 워크플로우에 중점을 두었습니다.
+
+[![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat&logo=docker&logoColor=white)]()
+[![Python](https://img.shields.io/badge/Python-3776AB?style=flat&logo=python&logoColor=white)]()
+[![Airflow](https://img.shields.io/badge/Airflow-017CEE?style=flat&logo=apacheairflow&logoColor=white)]()
+[![Postgres](https://img.shields.io/badge/Postgres-336791?style=flat&logo=postgresql&logoColor=white)]()
+[![dbt](https://img.shields.io/badge/dbt-FF694B?style=flat&logo=dbt&logoColor=white)]()
+[![Metabase](https://img.shields.io/badge/Metabase-509EE3?style=flat&logo=metabase&logoColor=white)]()
+[![Amazon S3](https://img.shields.io/badge/Amazon%20S3-569A31?style=flat&logo=amazons3&logoColor=white)]()
+
 
 ## 🚀 핵심 기술 스택
 
