@@ -116,5 +116,5 @@ This repo can be deployed via:
 docker compose up --build
 ```
 ---
-Made with 🧡 by Nami Kim
-[Blog](https://namixkim.com) | [GitHub](https://github.com/namikimlab) | [LinkedIn](https://linkedin.com/in/namixkim)
+🪲 by Nami Kim
+[Portfolio](https://namikimlab.github.io/) | [GitHub](https://github.com/namikimlab) | [Blog](https://namixkim.com) | [LinkedIn](https://linkedin.com/in/namixkim)

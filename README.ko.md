@@ -109,5 +109,5 @@ docker compose up --build
 ```
 
 ---
-Made with 🧡 by Nami Kim
-[Blog](https://namixkim.com) | [GitHub](https://github.com/namikimlab) | [LinkedIn](https://linkedin.com/in/namixkim)
+🪲 작성자: 김남희
+[Portfolio](https://namikimlab.github.io/) | [GitHub](https://github.com/namikimlab) | [Blog](https://namixkim.com) | [LinkedIn](https://linkedin.com/in/namixkim)
